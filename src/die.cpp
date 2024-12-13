@@ -2,5 +2,5 @@
 
 int Die::roll()
 {
-    return random() % 7;
+    return 1 + (std::rand() % (6 - 1 + 1));
 }

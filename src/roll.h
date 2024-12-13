@@ -11,8 +11,8 @@ class Roll
         int const roll_value(){return rolled_value;}
 
     private:
-        Die die1;
-        Die die2;
+        Die& die1;
+        Die& die2;
         int rolled_value;
 };
 
