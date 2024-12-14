@@ -1,6 +1,8 @@
 #define CATCH_CONFIG_MAIN  // This tells Catch to provide a main() - only do this in one cpp file
 #include "catch.hpp"
 #include "shooter.h"
+#include "point_phase.h"
+#include "come_out_phase.h"
 
 TEST_CASE("Verify Test Configuration", "verification") {
 	REQUIRE(true == true);
@@ -45,4 +47,59 @@ TEST_CASE("Verify shooter returns a roll and that result is in the range of 2 to
 		REQUIRE(game->roll_value() > 1);
 		REQUIRE(game->roll_value() < 13);
 	}
+}
+
+TEST_CASE("Verify ComeOutPhase returns natural, craps, and point")
+{
+	Die die1;
+	Die die2;
+	Roll* dice;
+	Shooter game;
+	ComeOutPhase result;
+
+	do
+	{
+		dice = game.throw_dice(die1,die2);
+	}while(dice->roll_value() != 2);
+	REQUIRE(result.get_outcome(dice) == RollOutcome::craps);
+
+	do
+	{
+		dice = game.throw_dice(die1,die2);
+	}while(dice->roll_value() != 7);
+	REQUIRE(result.get_outcome(dice) == RollOutcome::natural);
+
+	do
+	{
+		dice = game.throw_dice(die1,die2);
+	}while(dice->roll_value() != 4);
+	REQUIRE(result.get_outcome(dice) == RollOutcome::point);
+}
+
+TEST_CASE("Verify PointPhase returns point, sevenout, and nopoint")
+{
+	Die die1;
+	Die die2;
+	Roll* dice;
+	Shooter game;
+
+	do
+	{
+		dice = game.throw_dice(die1,die2);
+	}while(dice->roll_value() != 4);
+	int p = dice->roll_value();
+	PointPhase result(p);
+	REQUIRE(result.get_outcome(dice) == RollOutcome::point);
+
+	do
+	{
+		dice = game.throw_dice(die1,die2);
+	}while(dice->roll_value() != 7);
+	REQUIRE(result.get_outcome(dice) == RollOutcome::seven_out);
+
+	do
+	{
+		dice = game.throw_dice(die1,die2);
+	}while(dice->roll_value() != 2);
+	REQUIRE(result.get_outcome(dice) == RollOutcome::nopoint);
 }
